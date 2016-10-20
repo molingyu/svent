@@ -23,30 +23,24 @@ Or install it yourself as:
 ```ruby
 require 'svent'
 
-manger = Svent::EventManger.new
-
-manger.on(:click) do |em, info|
-    if info
+Svent.run do |em|
+    em.on(:click) do |info|
+        puts "click!(pos:{x:#{info.x} y:#{info.y}})"
+        puts 'wait 5 sec'
+        em.wait(5)
+        puts 'after 5 sec'
         puts 'delete!'
         em.delete # delete this callback
-    end
-    puts 'click!'
-    em.wait(10)
-    puts 'before 10 sec'
-    em.wait(5)
-    em.trigger(:click, true) 
+        puts 'delete!'#not output
+    end 
+    em.trigger(:click, {x:233, y:666})
 end
 
-manger.trigger(:click)
-
-Svent.run(manger)
-
-#------------out-------------
-click!
-# wait 10 sec
-before 10 sec
+#-----------output---------------
+# click!(pos:{x:233 y:666})
 # wait 5 sec
-delete!
+# after 5 sec
+# delete!
 ```
 
 ## Development

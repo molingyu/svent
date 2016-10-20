@@ -32,6 +32,11 @@ module Svent
     end
 
     def trigger(name, info = nil)
+      if info
+        def info.method_missing(sym)
+          self[sym] if self.key?(sym)
+        end
+      end
       name = name.to_sym if name.class == String
       if @events[name]
         @events[name].each do |callback|
@@ -47,8 +52,9 @@ module Svent
       @events[name][index] = callback
     end
 
-    def delete
+    def delete(after = false)
       @events[@this.name].delete(@this.callback)
+      Fiber.yield true unless after
     end
 
     def ok?(&block)
