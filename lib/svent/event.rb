@@ -1,10 +1,11 @@
 # encoding:utf-8
+require 'forwardable'
 
 module Svent
 
   class Event
-
-    def_delegator @list, :delete, :each_index, :each, :push
+    extend Forwardable
+    def_delegators :@list, :delete, :each, :push, :length, :[]=
 
     attr_reader :name
     attr_reader :type

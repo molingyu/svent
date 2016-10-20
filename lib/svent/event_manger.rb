@@ -48,7 +48,7 @@ module Svent
       if name == :event_manger_stop?
         raise 'error:The event(:event_manger_stop?) can only have one callback.' if @events.include?(:event_manger_stop?)
       end
-      event = @events[name] || Event.new(name, type)
+      event = @events[name] ||= Event.new(name, type)
       index = event.length unless index
       event[index] = callback
     end
@@ -112,7 +112,7 @@ module Svent
     def times_filter(value)
       object_id =
       counter_filter = @counter_filters[@this.object_id]
-      counter_filter ? counter_filter += 1 : return counter_filter = 1
+      counter_filter ? counter_filter += 1 : (return counter_filter = 1)
       loop do
         break @counter_filters.delete(@this.object_id) if @counter_filters[object_id] > value
         Fiber.yield true
