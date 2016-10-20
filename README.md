@@ -1,6 +1,7 @@
 # Svent
 [![Gem Version](https://badge.fury.io/rb/svent.svg)](http://badge.fury.io/rb/svent)
 [![Build Status](https://travis-ci.org/molingyu/svent.svg?branch=master)](https://travis-ci.org/molingyu/svent)
+[![Code Climate](https://codeclimate.com/github/molingyu/svent/badges/gpa.svg)](https://codeclimate.com/github/molingyu/svent)
 
 Svent is an async event framework implemented with Fiber.Used for game or GUI event handling.
 
