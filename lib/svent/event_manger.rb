@@ -4,28 +4,29 @@ module Svent
 
   class EventManger
 
-    attr_accessor :events
-    attr_accessor :this
-    attr_accessor :timer
-    attr_accessor :counter
-    attr_accessor :timer_filter
-    attr_accessor :counter_filter
+    attr_reader :events
+    attr_reader :this
+    attr_reader :timers
+    attr_reader :counters
+    attr_reader :timer_filters
+    attr_reader :counter_filters
 
     def initialize
       @events = {}
+      @this = nil
       @event_callback_fibers = []
-      @timer = {}
-      @counter = {}
-      @timer_filter = {}
-      @counter_filter = {}
+      @timers = {}
+      @counters = {}
+      @timer_filters = {}
+      @counter_filters = {}
     end
 
     def update
       if @event_callback_fibers != []
-        @event_callback_fibers.each do |o|
-          next @event_callback_fibers.delete(o) unless o.alive?
-          @this = o
-          o.resume
+        @event_callback_fibers.each do |obj|
+          next @event_callback_fibers.delete(obj) unless obj.alive?
+          @this = obj
+          obj.resume
           @this = nil
         end
       end
@@ -38,11 +39,8 @@ module Svent
         end
       end
       name = name.to_sym if name.class == String
-      if @events[name]
-        @events[name].each do |callback|
-          @event_callback_fibers.push(EventCallbackFiber.new(self, name, callback, info))
-        end
-      end
+      event = @events[name]
+      event.each{ |callback| @event_callback_fibers.push(EventCallbackFiber.new(self, name, callback, info)) } if event
     end
 
     def on(name, type = nil, index = nil, &callback)
@@ -50,9 +48,9 @@ module Svent
       if name == :event_manger_stop?
         raise 'error:The event(:event_manger_stop?) can only have one callback.' if @events.include?(:event_manger_stop?)
       end
-      @events[name] = @events[name] || Event.new(name, type)
-      index = @events[name].length unless index
-      @events[name][index] = callback
+      event = @events[name] || Event.new(name, type)
+      index = event.length unless index
+      event[index] = callback
     end
 
     def stop
@@ -64,9 +62,13 @@ module Svent
       @event_callback_fibers.size == 1 && @event_callback_fibers.last.name == :event_manger_stop?
     end
 
-    def delete(after = false)
+    def delete
       @events[@this.name].delete(@this.callback)
-      Fiber.yield true unless after
+    end
+
+    def delete_after
+      delete
+      Fiber.yield true
     end
 
     def ok?(&block)
@@ -81,35 +83,38 @@ module Svent
     end
 
     def wait(value)
-      @timer[@this.object_id] = Time.now unless @timer[@this.object_id]
+      timer = @timers[@this.object_id]
+      timer = Time.now unless timer
       loop do
-        break @timer.delete(@this.object_id) unless Time.now - @timer[@this.object_id] < value
+        break @timers.delete(@this.object_id) unless Time.now - timer < value
         Fiber.yield
       end
     end
 
     def times(value)
-      @counter[@this.object_id] = 1 unless @counter[@this.object_id]
-      @counter[@this.object_id] += 1
+      counter = @counters[@this.object_id]
+      counter ? counter += 1 : counter = 1
       loop do
-        break @counter.delete(@this.object_id) if @counter[@this.object_id] > value
+        break @counters.delete(@this.object_id) if counter > value
         Fiber.yield
       end
     end
 
     def wait_filter(value)
-      return @timer_filter[@this.object_id] = Time.now unless @timer_filter[@this.object_id]
+      timer_filter = @timer_filters[@this.object_id]
+      return timer_filter = Time.now unless timer_filter
       loop do
-        break @timer_filter.delete(@this.object_id) unless Time.now - @timer_filter[@this.object_id] < value
+        break @timer_filters.delete(@this.object_id) unless Time.now - timer_filter < value
         Fiber.yield true
       end
     end
 
     def times_filter(value)
-      return @counter_filter[@this.object_id] = 1 unless @counter_filter[@this.object_id]
-      @counter_filter[@this.object_id] += 1
+      object_id =
+      counter_filter = @counter_filters[@this.object_id]
+      counter_filter ? counter_filter += 1 : return counter_filter = 1
       loop do
-        break @counter_filter.delete(@this.object_id) if @counter_filter[@this.object_id] > value
+        break @counter_filters.delete(@this.object_id) if @counter_filters[object_id] > value
         Fiber.yield true
       end
     end

@@ -3,13 +3,13 @@
 module Svent
 
   class EventCallbackFiber
+    # Wrap the event callback function with Fiber.
 
     attr_reader :name
     attr_reader :info
     attr_reader :callback
 
     def initialize(event_manger, name, callback, info)
-      @event_manger = event_manger
       @name = name
       @info = info
       @callback = callback
