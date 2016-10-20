@@ -6,6 +6,7 @@ require_relative 'svent/event_manger'
 module Svent
 
   def self.run(event_manger = EventManger.new, &block)
+    @stop = false
     @event_manger = event_manger
     block[@event_manger] if block
     @event_manger.update until @stop

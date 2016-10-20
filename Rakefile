@@ -4,7 +4,7 @@ require 'rake/testtask'
 Rake::TestTask.new do |task|
   task.libs.push 'lib'
   task.libs.push 'test'
-  task.pattern = 'test/test.rb'
+  task.pattern = 'test/**/*_test.rb'
 end
 
 task default: [:test]
