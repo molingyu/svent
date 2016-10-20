@@ -47,9 +47,21 @@ module Svent
 
     def on(name, type = nil, index = nil, &callback)
       name = name.to_sym if name.class == String
+      if name == :event_manger_stop?
+        raise 'error:The event(:event_manger_stop?) can only have one callback.' if @events.include?(:event_manger_stop?)
+      end
       @events[name] = @events[name] || Event.new(name, type)
       index = @events[name].length unless index
       @events[name][index] = callback
+    end
+
+    def stop
+      trigger(:event_manger_stop)
+      trigger(:event_manger_stop?)
+    end
+
+    def stop?
+      @event_callback_fibers.size == 1 && @event_callback_fibers.last.name == :event_manger_stop?
     end
 
     def delete(after = false)
