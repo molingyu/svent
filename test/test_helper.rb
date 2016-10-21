@@ -1,9 +1,13 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/mini_test'
-require 'ostruct'
+require 'simplecov'
 require "codeclimate-test-reporter"
 require_relative '../lib/svent'
+
+SimpleCov.start do
+  add_filter '/test/'
+end
 
 CodeClimate::TestReporter.start
 

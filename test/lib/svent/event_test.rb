@@ -20,25 +20,24 @@ describe Svent::Event do
 
   it "create/read/update/length/delete" do
     # create
-    0..5.times{ @event.push Proc.new {} }
-    @event.instance_variable_get(:@list).length.must_equal 5, '#create!'
+    @event.push(proc { p 233 })
+    @event.instance_variable_get(:@list).length.must_equal 1, '#create!'
 
     # read
-    callback = @event.instance_variable_get(:@list)[1]
-    @event[1].must_equal callback, '#read!'
+    callback = @event.instance_variable_get(:@list)[0]
+    @event[0].must_equal callback, '#read!'
 
     # update
     callback = Proc.new {}
-    @event[1] = callback
-    @event[1].must_equal callback, '#update!'
+    @event[0] = callback
+    @event[0].must_equal callback, '#update!'
 
     # length
-    @event.length.must_equal 5, 'length!'
+    @event.length.must_equal 1, 'length!'
 
     # delete
-    callback = @event[1]
     @event.delete(callback)
-    @event.length.must_equal 4, 'delete!'
+    @event.length.must_equal 0, 'delete!'
   end
 
 end
