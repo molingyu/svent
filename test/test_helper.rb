@@ -2,7 +2,11 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/mini_test'
 require 'ostruct'
+require "codeclimate-test-reporter"
 require_relative '../lib/svent'
+
+CodeClimate::TestReporter.start
+
 
 def context(*args, &block)
   describe(*args, &block)
