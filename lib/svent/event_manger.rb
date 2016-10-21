@@ -93,7 +93,7 @@ module Svent
 
     def times(value)
       counter = @counters[@this.object_id]
-      counter ? counter += 1 : counter = 1
+      counter ? @counters[@this.object_id] += 1 : @counters[@this.object_id] = 1
       loop do
         break @counters.delete(@this.object_id) if counter > value
         Fiber.yield
@@ -110,9 +110,8 @@ module Svent
     end
 
     def times_filter(value)
-      object_id =
       counter_filter = @counter_filters[@this.object_id]
-      counter_filter ? counter_filter += 1 : (return counter_filter = 1)
+      counter_filter ? @counter_filters[@this.object_id] += 1 : (return @counter_filters[@this.object_id] = 1)
       loop do
         break @counter_filters.delete(@this.object_id) if @counter_filters[object_id] > value
         Fiber.yield true

@@ -1,15 +1,17 @@
-require "bundler/gem_tasks"
-require 'rake/testtask'
-require 'rubycritic/rake_task'
+require 'bundler/gem_tasks'
 
-Rake::TestTask.new do |task|
-  task.libs.push 'lib'
-  task.libs.push 'test'
-  task.pattern = 'test/**/*_test.rb'
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = FileList["spec/*_spec.rb"]
 end
 
-RubyCritic::RakeTask.new do |task|
-  task.paths = FileList['lib/**/*.rb']
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
+rescue LoadError
+  task :rubocop do
+    $stderr.puts 'Rubocop is disabled'
+  end
 end
 
-task default: [:test, :rubycritic]
+task default: [:spec, :rubocop]
