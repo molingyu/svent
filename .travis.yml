@@ -18,3 +18,6 @@ matrix:
     - rvm: rbx-3
   fast_finish: true
 script: bundle exec rake
+addons:
+    code_climate:
+        repo_token: 6896a20297dac7ea23f4786a3e91357ed5714984a14662892389722c3aeaf085
