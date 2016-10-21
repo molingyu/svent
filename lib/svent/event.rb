@@ -5,7 +5,7 @@ module Svent
 
   class Event
     extend Forwardable
-    def_delegators :@list, :delete, :each, :push, :length, :[]=
+    def_delegators :@list, :delete, :each, :push, :length, :[]=, :[]
 
     attr_reader :name
     attr_reader :type

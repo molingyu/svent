@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/mini_test'
 require 'ostruct'
+require_relative '../lib/svent'
 
 def context(*args, &block)
   describe(*args, &block)
