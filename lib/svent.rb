@@ -1,11 +1,16 @@
+module Svent
+
+  DEBUG = false
+
+end
+
 require_relative "svent/version"
-require_relative 'svent/event'
-require_relative 'svent/event_callback_fiber'
 require_relative 'svent/event_manger'
 
 module Svent
 
   def self.run(event_manger = EventManger.new, &block)
+    $log = open('debug.log', 'w') if DEBUG
     @stop = false
     @event_manger = event_manger
     block[@event_manger] if block

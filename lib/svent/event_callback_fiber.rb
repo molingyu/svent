@@ -9,14 +9,15 @@ module Svent
     attr_reader :info
     attr_reader :callback
 
-    def initialize(event_manger, name, callback, info)
+    def initialize(helper, name, callback, info)
       @name = name
       @info = info
       @callback = callback
       @fiber = Fiber.new do
-        @callback.call(event_manger, info)
+        @callback.call(helper, info)
         @fiber = nil
       end
+      # self.resume
       @return = nil
     end
 

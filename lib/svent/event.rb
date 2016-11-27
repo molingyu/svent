@@ -8,16 +8,16 @@ module Svent
     def_delegators :@list, :delete, :each, :push, :length, :[]=, :[]
 
     attr_reader :name
-    attr_reader :type
+    attr_reader :info
 
-    def initialize(name, type)
+    def initialize(name, info)
       @list = []
       @name = name
-      @type = type
+      @info = info
     end
 
     def reverse
-      event = Event.new(@name, @type)
+      event = Event.new(@name, @info)
       event.instance_variable_set(:@list, @list.reverse)
       event
     end
